@@ -30,7 +30,19 @@ class Suits(Enum):
     DIAMOND = 0x1
     CLUB = 0x2
     SPADE = 0x3
+'''represents the formats of each message type'''
+class MessageFormat(Enum):
+    OFFER = "!IBH32s"       # magic cookie + type + tcp port + server name
+    REQUEST = "!IBB32s"     # magic cookie + type + num rounds + client name
+    CLIENT_PAYLOAD = "!IB5s"   # magic cookie + type + player decision
+    SERVER_PAYLOAD = "!IB3sB"  # magic cookie + type + card(3) + round result
 
+'''represents the length of each message type'''
+class MessageLength(Enum):
+    OFFER = struct.calcsize(MessageFormat.OFFER.value)
+    REQUEST = struct.calcsize(MessageFormat.REQUEST.value)
+    CLIENT_PAYLOAD = struct.calcsize(MessageFormat.CLIENT_PAYLOAD.value)
+    SERVER_PAYLOAD = struct.calcsize(MessageFormat.SERVER_PAYLOAD.value)
 
 def card_value(rank: int) -> int:
     if 2 <= rank <= 10:

@@ -1,6 +1,6 @@
 import socket
+from my_utils import MAGIC_COOKIE, BROADCAST_UDP_PORT
 
-UDP_PORT = 13122
 NAME="do i really need a name?"
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -10,7 +10,7 @@ if hasattr(socket, "SO_REUSEPORT"):
 else:
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-sock.bind(('', UDP_PORT))
+sock.bind(('', BROADCAST_UDP_PORT))
 
 print("Client started, listening for offer requests...")
 

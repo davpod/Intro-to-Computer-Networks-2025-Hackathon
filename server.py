@@ -1,7 +1,7 @@
 import socket
 import struct
 import time
-
+from my_utils import *
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -22,5 +22,5 @@ while True:
         tcp_port,
         b"MyCoolServer".ljust(32, b'\x00')
     )
-    sock.sendto(offer, ('255.255.255.255', UDP_PORT))
+    sock.sendto(offer, ('255.255.255.255', BROADCAST_UDP_PORT))
     time.sleep(1)
