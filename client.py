@@ -1,7 +1,7 @@
 # client.py
 import sys
 from networkManager import *
-from my_utils import PlayerDecision, GameState, Card
+from my_utils import *
 
 
 CLIENT_NAME = "BlackijeckyClient"
