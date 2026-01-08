@@ -1,39 +1,50 @@
 # game.py
 import random
-from my_utils import Suits, card_value, pack_card, unpack_card, GameState, PlayerDecision
+from typing import List, Callable
+from my_utils import Card, Suits, GameState, PlayerDecision
+
 
 class BlackjackGame:
     """
-    Handles a single round of simplified Blackjack
+    Handles a single round of simplified Blackjack.
+    Pure game logic – no networking, no printing, no user input.
     """
-    def __init__(self):
-        self.deck = self._new_shuffled_deck()
 
-    def _new_shuffled_deck(self) -> list[tuple[int, Suits]]:
-        """Create a new standard 52-card deck and shuffle it"""
-        deck = [(rank, suit) for suit in Suits for rank in range(1, 14)]
+    def __init__(self):
+        self.deck: List[Card] = self._new_shuffled_deck()
+
+    def _new_shuffled_deck(self) -> List[Card]:
+        """Create and shuffle a standard 52-card deck"""
+        deck = [Card(rank, suit) for suit in Suits for rank in range(1, 14)]
         random.shuffle(deck)
         return deck
 
-    def draw_card(self) -> tuple[int, Suits]:
-        """Draw a card from the deck"""
+    def draw_card(self) -> Card:
+        """Draw a card from the deck (reshuffle if empty)"""
         if not self.deck:
             self.deck = self._new_shuffled_deck()
         return self.deck.pop()
 
-    def hand_value(self, hand: list[tuple[int, Suits]]) -> int:
-        """Compute the total value of a hand"""
-        total = sum(card_value(rank) for rank, _ in hand)
-        return total
-
-    def play_round(self, player_decision_callback) -> tuple[list[tuple[int,Suits]], list[tuple[int,Suits]], GameState]:
+    def hand_value(self, hand: List[Card]) -> int:
         """
-        Play a single round:
-        - player_decision_callback(): called to get player's choice (HIT/STAND)
+        Compute blackjack hand value.
+        (Ace always counts as 11 in this simplified version)
+        """
+        return sum(card.value() for card in hand)
+
+    def play_round(
+        self,
+        player_decision_callback: Callable[[List[Card], Card], PlayerDecision]
+    ) -> tuple[List[Card], List[Card], GameState]:
+        """
+        Play a single blackjack round.
+
+        player_decision_callback(player_hand, dealer_visible_card) -> PlayerDecision
+
         Returns:
         - player_hand
         - dealer_hand
-        - result (GameState)
+        - GameState (WIN / LOSS / TIE)
         """
 
         # --- Initial deal ---
@@ -43,20 +54,21 @@ class BlackjackGame:
         # --- Player turn ---
         while True:
             if self.hand_value(player_hand) > 21:
-                # player bust
+                # Player busts
                 return player_hand, dealer_hand, GameState.LOSS
 
             decision = player_decision_callback(player_hand, dealer_hand[0])
+
             if decision == PlayerDecision.HIT:
                 player_hand.append(self.draw_card())
-            else:
+            else:  # STAND
                 break
 
         # --- Dealer turn ---
         while self.hand_value(dealer_hand) < 17:
             dealer_hand.append(self.draw_card())
 
-        # --- Determine winner ---
+        # --- Decide winner ---
         player_total = self.hand_value(player_hand)
         dealer_total = self.hand_value(dealer_hand)
 

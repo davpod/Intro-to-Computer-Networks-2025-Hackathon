@@ -44,23 +44,18 @@ class MessageLength(Enum):
     CLIENT_PAYLOAD = struct.calcsize(MessageFormat.CLIENT_PAYLOAD.value)
     SERVER_PAYLOAD = struct.calcsize(MessageFormat.SERVER_PAYLOAD.value)
 
-def card_value(rank: int) -> int:
-    if 2 <= rank <= 10:
-        return rank
-    elif 11 <= rank <= 13:  # J, Q, K
-        return 10
-    elif rank == 1:  # Ace
-        return 11
-
 
 def pack_card(rank: int, suit: int) -> bytes:
     """Pack a card into 3 bytes: 2 bytes rank, 1 byte suit"""
     return struct.pack("!HB", rank, suit)
 
-def unpack_card(card_bytes: bytes) -> tuple[int, int]:
+def unpack_card(card_bytes: bytes):
     """Unpack 3 bytes into (rank, suit)"""
     rank, suit = struct.unpack("!HB", card_bytes)
-    return rank, suit
+    try:
+        return Card(rank, Suits(suit))
+    except ValueError:
+        raise ValueError("Invalid suit received")
 
 def fix_name_length(name: str) -> bytes:
     """Return a 32-byte padded/truncated name"""
@@ -72,3 +67,27 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+class Card:
+    def __init__(self, rank: int, suit: Suits):
+        self.rank = rank
+        self.suit = suit
+
+    def __str__(self):
+        # Convert rank to nice string
+        rank_str = {1: "A", 11: "J", 12: "Q", 13: "K"}.get(self.rank, str(self.rank))
+        # Suit as a symbol
+        suit_str = {"HEART": "♥", "DIAMOND": "♦", "CLUB": "♣", "SPADE": "♠"}[self.suit.name]
+        return f"{rank_str}{suit_str}"
+
+    def __repr__(self):
+        return str(self)
+
+    def value(self):
+        """Return the blackjack value of the card"""
+        if 2 <= self.rank <= 10:
+            return self.rank
+        elif 11 <= self.rank <= 13:  # J,Q,K
+            return 10
+        elif self.rank == 1:  # Ace
+            return 11
