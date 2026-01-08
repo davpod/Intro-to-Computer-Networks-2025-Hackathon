@@ -56,6 +56,8 @@ def handle_client(client_sock: socket.socket, client_ip: str):
                     card = game.draw_card()
                     player_hand.append(card)
                     print("[SERVER] Player hits:", card)
+                    print("[SERVER] Player cards:", ", ".join(map(str, player_hand)))
+                    print("[SERVER] Dealer shows:", dealer_hand[0])
                     if sum(c.value() for c in player_hand) > 21:
                         client_sock.sendall(
                             pack_server_payload(card, GameState.LOSS)
@@ -72,10 +74,12 @@ def handle_client(client_sock: socket.socket, client_ip: str):
             if sum(c.value() for c in player_hand) <= 21:
                 # reveal hidden card
                 print("[SERVER] Dealer reveals:", dealer_hand[1])
-                client_sock.sendall(
-                    pack_server_payload(dealer_hand[1], GameState.NOT_OVER)
-                )
+                if sum(c.value() for c in dealer_hand) < 17:
+                    client_sock.sendall(
+                        pack_server_payload(dealer_hand[1], GameState.NOT_OVER)
+                    )
 
+                #draw for as long as needed
                 while sum(c.value() for c in dealer_hand) < 17:
                     card = game.draw_card()
                     dealer_hand.append(card)
@@ -96,7 +100,10 @@ def handle_client(client_sock: socket.socket, client_ip: str):
                     result = GameState.LOSS
                 else:
                     result = GameState.TIE
-
+                print("[SERVER] Player cards:", ", ".join(map(str, player_hand)))
+                print("[SERVER] Dealer shows:", dealer_hand)
+                print(f"[SERVER] Player card values sum: {sum(c.value() for c in player_hand)}")
+                print(f"[SERVER] Dealer card values sum: {sum(c.value() for c in dealer_hand)}")
                 print(f"[SERVER] Result: {result.name}")
                 client_sock.sendall(
                     pack_server_payload(dealer_hand[-1], result)

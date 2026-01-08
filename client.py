@@ -50,6 +50,7 @@ def play_game(tcp_sock: socket.socket, num_rounds: int):
                 dealer_hand.append(card)
 
         print(f"[CLIENT] Your hand: {', '.join(map(str, player_hand))}")
+        print(f"[CLIENT] Your card values sum: {sum(c.value() for c in player_hand)}")
         print(f"[CLIENT] Dealer shows: {dealer_hand[0]}")
 
         # ---- PLAYER TURN ----
@@ -67,7 +68,9 @@ def play_game(tcp_sock: socket.socket, num_rounds: int):
             card, state = unpack_server_payload(data)
             player_hand.append(card)
             print(f"[CLIENT] You drew: {card}")
-
+            print(f"[CLIENT] Your hand: {', '.join(map(str, player_hand))}")
+            print(f"[CLIENT] Your card values sum: {sum(c.value() for c in player_hand)}")
+            print(f"[CLIENT] Dealer shows: {dealer_hand[0]}")
             if state != GameState.NOT_OVER:
                 # round ended immediately after HIT (bust)
                 if state == GameState.WIN:
@@ -88,7 +91,10 @@ def play_game(tcp_sock: socket.socket, num_rounds: int):
             card, state = unpack_server_payload(data)
             dealer_hand.append(card)
             print(f"[CLIENT] Dealer drew: {card}")
-
+            print(f"[CLIENT] Your hand: {', '.join(map(str, player_hand))}")
+            print(f"[CLIENT] Your card values sum: {sum(c.value() for c in player_hand)}")
+            print(f"[CLIENT] Dealer shows: {', '.join(map(str, dealer_hand))}")
+            print(f"[CLIENT] Dealer card values sum: {sum(c.value() for c in dealer_hand)}")
             if state != GameState.NOT_OVER:
                 if state == GameState.WIN:
                     stats["wins"] += 1
