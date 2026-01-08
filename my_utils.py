@@ -65,3 +65,10 @@ def unpack_card(card_bytes: bytes) -> tuple[int, int]:
 def fix_name_length(name: str) -> bytes:
     """Return a 32-byte padded/truncated name"""
     return name.encode()[:NAME_LENGTH].ljust(NAME_LENGTH, b'\x00')
+
+def is_number(s):
+    try:
+        float(s) # Try converting to a float
+        return True
+    except ValueError:
+        return False
