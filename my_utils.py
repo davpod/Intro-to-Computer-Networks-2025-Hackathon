@@ -44,7 +44,6 @@ class MessageLength(Enum):
     CLIENT_PAYLOAD = struct.calcsize(MessageFormat.CLIENT_PAYLOAD.value)
     SERVER_PAYLOAD = struct.calcsize(MessageFormat.SERVER_PAYLOAD.value)
 
-
 def pack_card(rank: int, suit: int) -> bytes:
     """Pack a card into 3 bytes: 2 bytes rank, 1 byte suit"""
     return struct.pack("!HB", rank, suit)
@@ -61,6 +60,7 @@ def fix_name_length(name: str) -> bytes:
     """Return a 32-byte padded/truncated name"""
     return name.encode()[:NAME_LENGTH].ljust(NAME_LENGTH, b'\x00')
 
+'''check if given input is a number'''
 def is_number(s):
     try:
         float(s) # Try converting to a float
@@ -68,6 +68,7 @@ def is_number(s):
     except ValueError:
         return False
 
+'''encapsulate ranks and suits into a single card'''
 class Card:
     def __init__(self, rank: int, suit: Suits):
         self.rank = rank

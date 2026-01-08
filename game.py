@@ -1,8 +1,8 @@
-# game.py
 import random
 from typing import List, Callable
 from my_utils import Card, Suits, GameState, PlayerDecision
 
+'''the file to handle all game logic'''
 
 class BlackjackGame:
     """

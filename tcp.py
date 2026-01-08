@@ -5,7 +5,6 @@ from my_utils import DEFAULT_TCP_PORT
 # -------------------------
 # TCP Functions
 # -------------------------
-
 def create_tcp_server() -> socket.socket:
     """Create TCP server socket, OS picks port"""
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

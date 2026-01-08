@@ -16,7 +16,6 @@ from my_utils import (
 # -------------------------
 # Payload packing/unpacking
 # -------------------------
-
 def pack_request(num_rounds: int, client_name: str) -> bytes:
     """Pack TCP request message"""
     return struct.pack(

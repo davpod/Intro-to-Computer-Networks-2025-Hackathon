@@ -1,10 +1,9 @@
-# client.py
 import sys
 from networkManager import *
 from my_utils import *
 
 
-CLIENT_NAME = "BlackijeckyClient"
+CLIENT_NAME = "do i really need a client?"
 
 
 def prompt_num_rounds() -> int:
@@ -124,7 +123,7 @@ def play_game(tcp_sock: socket.socket, num_rounds: int):
 
 
 def main():
-    print("[CLIENT] Blackijecky Client started")
+    print("[CLIENT] Client started")
 
     while True:
         num_rounds = prompt_num_rounds()

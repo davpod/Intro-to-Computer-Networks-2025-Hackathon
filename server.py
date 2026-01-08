@@ -1,10 +1,9 @@
-# server.py
 import socket
 from networkManager import *
 from my_utils import *
 from game import BlackjackGame
 
-SERVER_NAME = "BlackijeckyServer"
+SERVER_NAME = "do i really need a name?"
 ACCEPT_TIMEOUT = 1.0  # seconds
 
 

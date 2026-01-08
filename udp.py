@@ -12,7 +12,6 @@ from my_utils import (
 # -------------------------
 # UDP Functions (Server/Client)
 # -------------------------
-
 def broadcast_offer(server_name: str, tcp_port: int):
     """Server: send one UDP offer"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
