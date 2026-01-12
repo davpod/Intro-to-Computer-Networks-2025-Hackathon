@@ -1,4 +1,6 @@
 import socket
+import psutil
+import ipaddress
 import struct
 from typing import Tuple, Optional
 from my_utils import (
@@ -25,7 +27,10 @@ def broadcast_offer(server_name: str, tcp_port: int):
         tcp_port,
         server_name_bytes
     )
-    sock.sendto(msg, ('<broadcast>', BROADCAST_UDP_PORT))
+    local_ip=get_local_ip()
+    ip_parts=local_ip.split(".")
+    broadcast_ip=get_broadcast_address()
+    sock.sendto(msg, (broadcast_ip, BROADCAST_UDP_PORT))
     sock.close()
 
 
@@ -59,5 +64,29 @@ def listen_for_offers(timeout: Optional[float] = None) -> Tuple[str, int, str]:
         return addr[0], tcp_port, server_name
 
 
+#self explanetory
+def get_local_ip():
+    s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8",80))
+        return s.getsockname()[0]
+    finally:
+        s.close()
 
 
+
+def get_subnet_mask():
+    import psutil
+    local_ip = get_local_ip()
+
+    for iface, addrs in psutil.net_if_addrs().items():
+        for addr in addrs:
+            if addr.family == socket.AF_INET and addr.address == local_ip:
+                return addr.netmask
+    raise RuntimeError("Could not determine subnet mask")
+
+def get_broadcast_address():
+    ip = get_local_ip()
+    netmask = get_subnet_mask()
+    network = ipaddress.IPv4Network(f"{ip}/{netmask}", strict=False)
+    return str(network.broadcast_address)

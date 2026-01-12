@@ -3,7 +3,7 @@ from networkManager import *
 from my_utils import *
 from game import BlackjackGame
 
-SERVER_NAME = "do i really need a name?"
+SERVER_NAME = "birds are real?"
 ACCEPT_TIMEOUT = 1.0  # seconds
 
 

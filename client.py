@@ -3,7 +3,7 @@ from networkManager import *
 from my_utils import *
 
 
-CLIENT_NAME = "do i really need a client?"
+CLIENT_NAME = "birds are NOT real"
 
 
 def prompt_num_rounds() -> int:
