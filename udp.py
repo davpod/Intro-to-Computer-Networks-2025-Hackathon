@@ -67,14 +67,14 @@ def listen_for_offers(timeout: Optional[float] = None) -> Tuple[str, int, str]:
 #self explanetory
 def get_local_ip():
     s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    try:
+    try:#just connect to google dns, and check our socket ip name
         s.connect(("8.8.8.8",80))
         return s.getsockname()[0]
     finally:
         s.close()
 
 
-
+#calc subnet mask, check all interface until we reach the actual wifi interface and check the mask
 def get_subnet_mask():
     import psutil
     local_ip = get_local_ip()
@@ -85,6 +85,7 @@ def get_subnet_mask():
                 return addr.netmask
     raise RuntimeError("Could not determine subnet mask")
 
+#simple calculations
 def get_broadcast_address():
     ip = get_local_ip()
     netmask = get_subnet_mask()
